@@ -37,6 +37,9 @@ def onMouseEvent(event):
 		status = "stop"
 		print status
 	starttime = time.time()
+	# 返回 True 以便将事件传给其它处理程序     
+	# 注意，这儿如果返回 False ，则鼠标事件将被全部拦截     
+	# 也就是说你的鼠标看起来会僵在那儿，似乎失去响应了
 	return True
 	
 	
@@ -88,12 +91,19 @@ def getTime(threadName):
 def main():
 	global starttime
 	starttime = time.time()
+	# 创建一个“钩子”管理对象
 	hm = pyHook.HookManager()
+	# 监听所有键盘事件
 	hm.KeyDown = onKeyboardEvent
+	# 设置键盘“钩子”
 	hm.HookKeyboard()
+	# 监听所有鼠标事件
 	hm.MouseAll = onMouseEvent
+	# 设置鼠标“钩子”
 	hm.HookMouse()
+	# 创建一个线程用于判断starttime和endtime
 	thread.start_new_thread(getTime,  ("Thread-1",))
+	# 进入循环，如不手动关闭，程序将一直处于监听状态 
 	pythoncom.PumpMessages()
  
 if __name__ == "__main__":
